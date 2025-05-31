@@ -2,11 +2,11 @@ import * as fs from 'fs/promises';
 import path from 'path';
 
 const storeFolderPath = path.join(process.cwd(), "/lib/store");
-const storePath = path.join(storeFolderPath, "store.txt");
+const storePath = path.join(storeFolderPath, "store.json");
 
 const saveStore = async (store: Store) => {
   await wait(100);
-  await fs.writeFile(storePath, JSON.stringify(store));
+  await fs.writeFile(storePath, JSON.stringify(store, null, 2));
 };
 
 const readStore = async () => {

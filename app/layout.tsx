@@ -1,5 +1,7 @@
 import '~/styles/globals.css';
 
+import { Toaster } from '~/components/ui/sonner';
+
 import Providers from '../components/providers/providers';
 
 export const metadata = {
@@ -18,6 +20,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className="bg-background text-foreground">
         <Providers>{children}</Providers>
+        <Toaster position="top-right" />
       </body>
     </html>
   );

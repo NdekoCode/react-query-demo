@@ -1,6 +1,8 @@
 "use client";
 import { useRouter } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent } from '~/components/ui/card';
@@ -25,6 +27,7 @@ const addUser = () => (user: Omit<User, "id">) =>
 type TLogin = z.infer<typeof loginSchema>;
 export default function CreateUser() {
   const router = useRouter();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const form = useForm<TLogin>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -35,9 +38,14 @@ export default function CreateUser() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: addUser(),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      toast(`User ${variables?.name} created!`, {
+        description: "User created successfully",
+      });
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      router.push("/");
+      timeoutRef.current = setTimeout(() => {
+        router.push("/");
+      }, 1000);
     },
   });
   const onSubmit = async (values: TLogin) => {
@@ -52,6 +60,9 @@ export default function CreateUser() {
       console.error(error);
     }
   };
+  useEffect(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+  }, []);
   return (
     <div className="flex flex-col items-center justify-center gap-6 p-6 bg-muted min-h-svh md:p-10">
       <div className="flex flex-col items-center justify-center gap-6 p-6 bg-muted min-h-svh md:p-10">
