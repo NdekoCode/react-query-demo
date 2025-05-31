@@ -1,9 +1,9 @@
 "use client";
 import Link from 'next/link';
 import { use } from 'react';
-import { Loader } from '~/src/components/Loader';
-import { PostsResponseSchema } from '~/src/schema/post.schema';
-import { UserResponseSchema } from '~/src/schema/user.schema';
+import { Loader } from '~/components/Loader';
+import { PostsResponseSchema } from '~/lib/schema/post.schema';
+import { UserResponseSchema } from '~/lib/schema/user.schema';
 
 import { useQuery } from '@tanstack/react-query';
 

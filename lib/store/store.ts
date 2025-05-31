@@ -1,7 +1,7 @@
-import * as fs from "fs/promises";
-import path from "path";
+import * as fs from 'fs/promises';
+import path from 'path';
 
-const storeFolderPath = path.join(process.cwd(), "/src/store");
+const storeFolderPath = path.join(process.cwd(), "/lib/store");
 const storePath = path.join(storeFolderPath, "store.txt");
 
 const saveStore = async (store: Store) => {

@@ -1,6 +1,6 @@
 import '~/styles/globals.css';
 
-import Providers from './providers';
+import Providers from '../components/providers/providers';
 
 export const metadata = {
   title: "React Query Demo",
@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="bg-background">
+      <body className="bg-background text-foreground">
         <Providers>{children}</Providers>
       </body>
     </html>

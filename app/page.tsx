@@ -1,8 +1,8 @@
 "use client";
 import Link from 'next/link';
-import { Loader } from '~/src/components/Loader';
-import { UserLine } from '~/src/components/UserLine';
-import { UsersResponseSchema } from '~/src/schema/user.schema';
+import { Loader } from '~/components/Loader';
+import { UserLine } from '~/components/UserLine';
+import { UsersResponseSchema } from '~/lib/schema/user.schema';
 
 import { useQuery } from '@tanstack/react-query';
 

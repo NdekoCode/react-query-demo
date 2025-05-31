@@ -34,7 +34,7 @@
     "**/*.ts",
     "**/*.tsx",
     "next-env.d.ts",
-    "src/components/Loader.tsx.",
+    "libs/components/Loader.tsx.",
     ".next/types/**/*.ts"
   ],
   "exclude": [

@@ -1,12 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Loader } from "~/src/components/Loader";
-import { PostResponseSchema } from "~/src/schema/post.schema";
-import { UserResponseSchema } from "~/src/schema/user.schema";
-import { Post, User } from "~/src/store/store";
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Loader } from '~/components/Loader';
+import { PostResponseSchema } from '~/lib/schema/post.schema';
+import { UserResponseSchema } from '~/lib/schema/user.schema';
+import { Post, User } from '~/lib/store/store';
 
 const getPosts = async (postId: string) => {
   await new Promise((resolve) => setTimeout(resolve, 3000));
