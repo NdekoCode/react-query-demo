@@ -2,22 +2,10 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { Loader } from '~/components/Loader';
-import { PostResponseSchema } from '~/lib/schema/post.schema';
-import { UserResponseSchema } from '~/lib/schema/user.schema';
+import { getPosts } from '~/lib/services/posts.service';
+import { getUser } from '~/lib/services/users.service';
 
 import { useQuery } from '@tanstack/react-query';
-
-const getPosts = async (postId: string) => {
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-  return fetch(`/api/posts/${postId}`)
-    .then((res) => res.json())
-    .then(PostResponseSchema.parse);
-};
-
-const getUser = (userId: string) =>
-  fetch(`/api/users/${userId}`)
-    .then((res) => res.json())
-    .then(UserResponseSchema.parse);
 
 export default function PostPage() {
   const params = useParams();

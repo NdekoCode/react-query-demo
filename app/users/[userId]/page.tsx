@@ -2,27 +2,17 @@
 import Link from 'next/link';
 import { use } from 'react';
 import { Loader } from '~/components/Loader';
-import { PostsResponseSchema } from '~/lib/schema/post.schema';
-import { UserResponseSchema } from '~/lib/schema/user.schema';
+import { getPosts } from '~/lib/services/posts.service';
+import { getUser, getUserPosts } from '~/lib/services/users.service';
 
-import { useQuery } from '@tanstack/react-query';
-
-const getUser = (userId: string) =>
-  fetch(`/api/users/${userId}`)
-    .then((res) => res.json())
-    .then(UserResponseSchema.parse);
-
-const getUserPosts = (userId: string) =>
-  fetch(`/api/users/${userId}/posts`)
-    .then((res) => res.json())
-    .then(PostsResponseSchema.parse);
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 const UserPage: React.FC<{ params: Promise<{ userId: string }> }> = ({
   params,
 }) => {
   const parameter = use(params);
   const userId = parameter.userId as string;
-
+  const queryClient = useQueryClient();
   // User state
   const { data, isLoading, isError } = useQuery({
     queryKey: ["users", userId],
@@ -36,7 +26,7 @@ const UserPage: React.FC<{ params: Promise<{ userId: string }> }> = ({
     isLoading: postsLoading,
     isError: postsError,
   } = useQuery({
-    queryKey: ["user", userId, "posts"],
+    queryKey: ["users", userId, "posts"],
     queryFn: () => getUserPosts(userId),
     enabled: !!userId,
   });
@@ -66,7 +56,15 @@ const UserPage: React.FC<{ params: Promise<{ userId: string }> }> = ({
         {postsLoading && <Loader />}
         {postsError && <div>Something went wrong</div>}
         {posts?.posts.map((post) => (
-          <li key={post.id}>
+          <li
+            key={post.id}
+            onMouseEnter={() => {
+              queryClient.prefetchQuery({
+                queryKey: ["posts", post.id],
+                queryFn: () => getPosts(post.id.toString()!),
+              });
+            }}
+          >
             <Link className="hover:underline" href={`/posts/${post.id}`}>
               {post.name}
             </Link>

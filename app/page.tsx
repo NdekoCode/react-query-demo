@@ -2,18 +2,9 @@
 import Link from 'next/link';
 import { Loader } from '~/components/Loader';
 import { UserLine } from '~/components/UserLine';
-import { UsersResponseSchema } from '~/lib/schema/user.schema';
+import { getUsers } from '~/lib/services/users.service';
 
 import { useQuery } from '@tanstack/react-query';
-
-const getUsers = async () => {
-  const res = await fetch("/api/users");
-  if (!res.ok) {
-    throw new Error("Failed to fetch users");
-  }
-  const data = await res.json();
-  return UsersResponseSchema.parse(data);
-};
 
 export default function Home() {
   const { data, isLoading, isError } = useQuery({

@@ -10,7 +10,7 @@ import {
     Form, FormControl, FormField, FormItem, FormLabel, FormMessage
 } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
-import { User } from '~/lib/store/store';
+import { addUser } from '~/lib/services/users.service';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -19,11 +19,6 @@ const loginSchema = z.object({
   name: z.string(),
   email: z.string().email(),
 });
-const addUser = () => (user: Omit<User, "id">) =>
-  fetch("/api/users", {
-    method: "POST",
-    body: JSON.stringify(user),
-  });
 type TLogin = z.infer<typeof loginSchema>;
 export default function CreateUser() {
   const router = useRouter();
