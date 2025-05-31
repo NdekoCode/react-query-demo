@@ -36,7 +36,7 @@ const UserPage: React.FC<{ params: Promise<{ userId: string }> }> = ({
     isLoading: postsLoading,
     isError: postsError,
   } = useQuery({
-    queryKey: ["posts", userId],
+    queryKey: ["user", userId, "posts"],
     queryFn: () => getUserPosts(userId),
     enabled: !!userId,
   });

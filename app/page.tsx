@@ -1,4 +1,5 @@
 "use client";
+import Link from 'next/link';
 import { Loader } from '~/src/components/Loader';
 import { UserLine } from '~/src/components/UserLine';
 import { UsersResponseSchema } from '~/src/schema/user.schema';
@@ -25,6 +26,11 @@ export default function Home() {
 
   return (
     <div className="container flex flex-col gap-4 mt-10">
+      <div className="flex justify-start">
+        <Link href="/users/new" className="p-2 text-white bg-blue-500 rounded">
+          Create
+        </Link>
+      </div>
       <h1 className="text-4xl font-bold">Users</h1>
       <ul className="flex flex-col gap-2">
         {data?.users.map((user) => (
