@@ -8,14 +8,20 @@ import {
     Form, FormControl, FormField, FormItem, FormLabel, FormMessage
 } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
-import { UserResponseSchema } from '~/lib/schema/user.schema';
+import { User } from '~/lib/store/store';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const loginSchema = z.object({
   name: z.string(),
   email: z.string().email(),
 });
+const addUser = () => (user: Omit<User, "id">) =>
+  fetch("/api/users", {
+    method: "POST",
+    body: JSON.stringify(user),
+  });
 type TLogin = z.infer<typeof loginSchema>;
 export default function CreateUser() {
   const router = useRouter();
@@ -26,6 +32,14 @@ export default function CreateUser() {
       email: "",
     },
   });
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: addUser(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      router.push("/");
+    },
+  });
   const onSubmit = async (values: TLogin) => {
     const user = {
       name: values.name.trim(),
@@ -33,14 +47,7 @@ export default function CreateUser() {
     };
     console.log(user);
     try {
-      const res = await fetch("/api/users", {
-        method: "POST",
-        body: JSON.stringify(user),
-      });
-      const data = UserResponseSchema.parse(await res.json());
-      if (data) {
-        router.push("/");
-      }
+      mutation.mutate(user);
     } catch (error) {
       console.error(error);
     }
@@ -81,8 +88,8 @@ export default function CreateUser() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit">
-                  {form.formState.isLoading ? "Loading..." : "Submit"}
+                <Button disabled={mutation.isPending} type="submit">
+                  {mutation.isPending ? "Loading..." : "Submit"}
                 </Button>
               </form>
             </Form>
