@@ -1,12 +1,11 @@
 "use client";
-
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { Loader } from '~/components/Loader';
 import { PostResponseSchema } from '~/lib/schema/post.schema';
 import { UserResponseSchema } from '~/lib/schema/user.schema';
-import { Post, User } from '~/lib/store/store';
+
+import { useQuery } from '@tanstack/react-query';
 
 const getPosts = async (postId: string) => {
   await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -25,82 +24,19 @@ export default function PostPage() {
   const postId = params.postId as string;
 
   // Post state
-  const [data, setData] = useState<{ post: Post } | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
-
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["posts", postId],
+    queryFn: () => getPosts(postId),
+  });
   // User state
-  const [user, setUser] = useState<{ user: User } | null>(null);
-  const [userLoading, setUserLoading] = useState(false);
-  const [userError, setUserError] = useState(false);
-
-  // Fetch post data
-  useEffect(() => {
-    if (!postId) return;
-
-    let isCancelled = false;
-
-    const fetchPost = async () => {
-      try {
-        setIsLoading(true);
-        setIsError(false);
-        const result = await getPosts(postId);
-
-        if (!isCancelled) {
-          setData(result);
-        }
-      } catch (error) {
-        if (!isCancelled) {
-          setIsError(true);
-          console.error("Failed to fetch post:", error);
-        }
-      } finally {
-        if (!isCancelled) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    fetchPost();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [postId]);
-
-  // Fetch user data (dependent on post data)
-  useEffect(() => {
-    if (!data?.post.userId) return;
-
-    let isCancelled = false;
-
-    const fetchUser = async () => {
-      try {
-        setUserLoading(true);
-        setUserError(false);
-        const result = await getUser(data.post.userId.toString());
-
-        if (!isCancelled) {
-          setUser(result);
-        }
-      } catch (error) {
-        if (!isCancelled) {
-          setUserError(true);
-          console.error("Failed to fetch user:", error);
-        }
-      } finally {
-        if (!isCancelled) {
-          setUserLoading(false);
-        }
-      }
-    };
-
-    fetchUser();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [data?.post.userId]);
+  const {
+    data: userData,
+    isLoading: userLoading,
+    isError: userError,
+  } = useQuery({
+    queryKey: ["users", data?.post.userId],
+    queryFn: () => getUser(data?.post.userId.toString()!),
+  });
 
   if (isLoading) {
     return <Loader />;
@@ -115,9 +51,9 @@ export default function PostPage() {
       <h1 className="text-4xl font-bold">{data?.post.name}</h1>
       {userLoading && <Loader />}
       {userError && <div>Something went wrong</div>}
-      {user && (
-        <Link href={`/users/${user.user.id}`} className="hover:underline">
-          By {user.user.name}
+      {userData && (
+        <Link href={`/users/${userData?.user?.id}`} className="hover:underline">
+          By {userData?.user?.name}
         </Link>
       )}
       <hr />
